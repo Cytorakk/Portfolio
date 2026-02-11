@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LabVerse is an upcoming digital ecosystem designed to revolutionize how Medical Laboratory Science students learn and practice. With a comprehensive curriculum, virtual microscopy, and adaptive learning features, LabVerse is set to transform the educational experience for aspiring lab scientists. Stay tuned for our launch on February 1st, 2027!">
+    <meta name="author" content="ValFest®">
+    <title>Coming Soon - LabVerse</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #008080;
+            --secondary-teal: #006666;
+            --accent-gold: #FFD700;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section with Particle Background Effect */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+            text-align: center;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        /* Abstract Circle Decorations */
+        .decoration {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        .circle-1 { width: 300px; height: 300px; background: var(--primary-teal); top: -50px; left: -50px; }
+        .circle-2 { width: 500px; height: 500px; background: var(--primary-teal); bottom: -100px; right: -100px; }
+
+        .hero-content {
+            z-index: 10;
+            max-width: 800px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .logo-badge {
+            display: inline-block;
+            background: rgba(0, 128, 128, 0.1);
+            color: var(--primary-teal);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        h1 span {
+            color: var(--primary-teal);
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Countdown Container */
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .time-box {
+            background: var(--white);
+            padding: 1.5rem;
+            min-width: 120px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .time-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .time-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+
+        .time-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* About / Features Section */
+        .info-section {
+            background: var(--white);
+            padding: 6rem 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-light);
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 128, 128, 0.1);
+            transform: translateY(-5px);
+            border-color: var(--primary-teal);
+        }
+
+        .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text-dark);
+            color: var(--white);
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .footer-logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .launch-date {
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 2rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .countdown-container { gap: 1rem; }
+            .time-box { min-width: 80px; padding: 1rem; }
+            .time-value { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="decoration circle-1"></div>
+        <div class="decoration circle-2"></div>
+
+        <div class="hero-content">
+            <div class="logo-badge">Launching Soon</div>
+            <h1>The Future of <br><span>Med Lab Science</span></h1>
+            <p class="tagline">Prepare for a revolutionary digital ecosystem designed to transform how you learn, practice, and master Medical Laboratory Science.</p>
+
+            <div class="countdown-container">
+                <div class="time-box">
+                    <span class="time-value" id="days">00</span>
+                    <span class="time-label">Days</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-value" id="hours">00</span>
+                    <span class="time-label">Hours</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-value" id="minutes">00</span>
+                    <span class="time-label">Minutes</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-value" id="seconds">00</span>
+                    <span class="time-label">Seconds</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="info-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>What is LabVerse?</h2>
+                <p style="color:var(--text-light); max-width:600px; margin:0 auto;">LabVerse is more than just a website; it is an integrated academic companion built specifically for the modern laboratory scientist.</p>
+            </div>
+
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-card">
+                    <div class="icon">📚</div>
+                    <h3>Comprehensive Curriculum</h3>
+                    <p>Access structured resources from Year 1 to Final Year. Every lecture, every note, and every guideline is curated to match standard university syllabi.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card">
+                    <div class="icon">🔬</div>
+                    <h3>Virtual Microscopy</h3>
+                    <p>No microscope? No problem. Explore high-resolution digital slides for Histopathology, Hematology, and Parasitology from the comfort of your screen.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card">
+                    <div class="icon">🧠</div>
+                    <h3>Adaptive Learning</h3>
+                    <p>Track your progress with intelligent course mapping. Mark modules as complete, take quizzes, and visualize your journey through the academic year.</p>
+                </div>
+                 <!-- Feature 4 -->
+                 <div class="feature-card">
+                    <div class="icon">🌐</div>
+                    <h3>Unified Ecosystem</h3>
+                    <p>From Chemical Pathology to Medical Virology, all disciplines are interconnected in one seamless interface, removing the need for scattered textbooks.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-logo">🔬 LabVerse</div>
+        <p class="launch-date">Official Launch: February 1st, 2027</p>
+        <p style="font-size: 0.8rem; color: rgba(255,255,255,0.4);">© 2027 LabVerse Education. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Set the date we're counting down to
+            const launchDate = new Date("Feb 1, 2027 00:00:00").getTime();
+
+            function updateCountdown() {
+                // Get today's date and time
+                const now = new Date().getTime();
+
+                // Find the distance between now and the count down date
+                const distance = launchDate - now;
+
+                // Time calculations for days, hours, minutes and seconds
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Display the result in the elements
+                const daysEl = document.getElementById("days");
+                if (!daysEl) return; // Guard clause in case DOM isn't ready
+
+                daysEl.innerHTML = days < 10 ? '0' + days : days;
+                document.getElementById("hours").innerHTML = hours < 10 ? '0' + hours : hours;
+                document.getElementById("minutes").innerHTML = minutes < 10 ? '0' + minutes : minutes;
+                document.getElementById("seconds").innerHTML = seconds < 10 ? '0' + seconds : seconds;
+
+                // If the count down is finished, write some text
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    document.querySelector(".countdown-container").innerHTML = "<h2 style='color:var(--primary-teal)'>We Are Live!</h2>";
+                }
+            }
+
+            // Update the count down every 1 second
+            // Renamed 'x' to 'countdownInterval' and wrapped in DOMContentLoaded to prevent redeclaration errors
+            const countdownInterval = setInterval(updateCountdown, 1000);
+            
+            // Initial call to avoid 1-second delay
+            updateCountdown();
+        });
+    </script>
+</body>
+</html>
