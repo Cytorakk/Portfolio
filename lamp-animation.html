@@ -3,236 +3,691 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Pull-String Lamp</title>
+    <title>Realistic Interactive Pull-String Lamp</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --bg-color: #1a1a1a;
-            --lamp-color: #333;
-            --glow-color: rgba(255, 225, 120, 0.6);
-            --bulb-on: #fff2b2;
-            --bulb-off: #444;
+            --bg-color: #0a0a0a;
+            --bg-light: #1a1a1a;
+            --lamp-color: #2a2a2a;
+            --lamp-highlight: #3a3a3a;
+            --glow-color: rgba(255, 220, 100, 0.8);
+            --bulb-on: #fff8e7;
+            --bulb-off: #2a2a2a;
+            --cord-color: #1a1a1a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            margin: 0;
             overflow: hidden;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: var(--bg-color);
-            transition: background-color 0.5s ease;
-            font-family: system-ui, -apple-system, sans-serif;
+            align-items: flex-start;
+            min-height: 100vh;
+            background: radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 100%);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            perspective: 1000px;
         }
 
-        body.light-on {
-            background-color: #2c2c2c;
+        /* Room Atmosphere */
+        .room {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 50% 0%, transparent 0%, rgba(0,0,0,0.4) 100%),
+                linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%);
+            pointer-events: none;
+            z-index: 1;
         }
 
-        /* The Main Lamp Container */
-        .lamp-container {
+        /* Vignette Effect */
+        .vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.8) 100%);
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.6;
+            transition: opacity 0.8s ease;
+        }
+
+        body.light-on .vignette {
+            opacity: 0.3;
+        }
+
+        /* Dust Particles */
+        .dust-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        body.light-on .dust-container {
+            opacity: 1;
+        }
+
+        .dust {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 220, 150, 0.6);
+            border-radius: 50%;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+
+        /* Main Lamp Assembly */
+        .lamp-assembly {
             position: relative;
+            width: 300px;
+            height: 500px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 300px;
-        }
-
-        /* Ceiling mount */
-        .ceiling-mount {
-            width: 60px;
-            height: 10px;
-            background: #111;
-            border-radius: 5px 5px 0 0;
-        }
-
-        /* The Cord */
-        .cord {
-            width: 4px;
-            height: 100px;
-            background: #111;
-        }
-
-        /* Lamp Shade */
-        .lamp-shade {
-            position: relative;
-            width: 180px;
-            height: 100px;
-            background: var(--lamp-color);
-            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+            transform-style: preserve-3d;
             z-index: 2;
         }
 
-        /* The Bulb */
-        .bulb {
+        /* Ceiling Mount */
+        .ceiling-mount {
+            width: 80px;
+            height: 15px;
+            background: linear-gradient(to bottom, #0f0f0f, #1a1a1a);
+            border-radius: 0 0 8px 8px;
+            box-shadow: 
+                0 2px 4px rgba(0,0,0,0.8),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        .ceiling-mount::after {
+            content: '';
             position: absolute;
-            bottom: -15px;
+            bottom: -5px;
             left: 50%;
             transform: translateX(-50%);
-            width: 50px;
-            height: 60px;
-            background: var(--bulb-off);
-            border-radius: 50% 50% 40% 40%;
+            width: 20px;
+            height: 5px;
+            background: #111;
+            border-radius: 0 0 50% 50%;
+        }
+
+        /* Chain/Cord Container with Physics */
+        .cord-physics {
+            position: relative;
+            width: 4px;
+            height: 120px;
+            transform-origin: top center;
+            transition: transform 0.1s;
+        }
+
+        .cord-segment {
+            position: absolute;
+            width: 100%;
+            background: linear-gradient(to right, #0a0a0a, #1a1a1a, #0a0a0a);
+            border-radius: 2px;
+            box-shadow: 
+                1px 0 2px rgba(0,0,0,0.5),
+                inset 0 0 1px rgba(255,255,255,0.05);
+        }
+
+        /* Lamp Head Container */
+        .lamp-head {
+            position: relative;
+            transform-style: preserve-3d;
+            animation: gentleSway 4s ease-in-out infinite;
+            transform-origin: top center;
+        }
+
+        @keyframes gentleSway {
+            0%, 100% { transform: rotateZ(-1deg); }
+            50% { transform: rotateZ(1deg); }
+        }
+
+        /* Lamp Shade with 3D effect */
+        .lamp-shade {
+            position: relative;
+            width: 200px;
+            height: 120px;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #2a2a2a 100%);
+            clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+            box-shadow: 
+                inset 0 10px 20px rgba(0,0,0,0.5),
+                0 10px 30px rgba(0,0,0,0.5);
+            z-index: 3;
+        }
+
+        .lamp-shade::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, 
+                rgba(255,255,255,0.1) 0%, 
+                transparent 30%, 
+                transparent 70%, 
+                rgba(0,0,0,0.3) 100%);
+            clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+        }
+
+        .lamp-shade::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(to right, 
+                transparent 0%, 
+                rgba(255,255,255,0.05) 50%, 
+                transparent 100%);
+            clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+        }
+
+        /* Shade Interior (visible when looking up) */
+        .shade-interior {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 20px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.8);
+        }
+
+        /* The Bulb with realistic filament */
+        .bulb-container {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1;
-            transition: background 0.3s, box-shadow 0.3s;
         }
 
-        .light-on .bulb {
-            background: var(--bulb-on);
-            box-shadow: 0 0 50px 20px var(--glow-color), 
-                        0 0 100px 40px rgba(255, 225, 100, 0.2);
+        .bulb {
+            width: 60px;
+            height: 70px;
+            background: var(--bulb-off);
+            border-radius: 50% 50% 45% 45%;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                inset 0 -10px 20px rgba(0,0,0,0.5),
+                inset 0 10px 20px rgba(255,255,255,0.05);
         }
 
-        /* The Room Glow Effect */
-        .room-glow {
+        .bulb::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 20%;
+            width: 30%;
+            height: 40%;
+            background: linear-gradient(135deg, 
+                rgba(255,255,255,0.3) 0%, 
+                rgba(255,255,255,0.1) 50%,
+                transparent 100%);
+            border-radius: 50%;
+            transform: rotate(-20deg);
+        }
+
+        /* Filament */
+        .filament {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(255, 225, 120, 0.15) 0%, rgba(0,0,0,0) 70%);
+            width: 30px;
+            height: 40px;
+            opacity: 0.2;
+            transition: opacity 0.3s;
+        }
+
+        .filament::before,
+        .filament::after {
+            content: '';
+            position: absolute;
+            border: 2px solid #666;
+            border-radius: 50%;
+            background: transparent;
+        }
+
+        .filament::before {
+            width: 20px;
+            height: 30px;
+            top: 5px;
+            left: 5px;
+        }
+
+        .filament::after {
+            width: 15px;
+            height: 25px;
+            top: 7px;
+            left: 7px;
+        }
+
+        body.light-on .filament {
+            opacity: 1;
+            filter: drop-shadow(0 0 5px #ffeb3b);
+        }
+
+        body.light-on .filament::before,
+        body.light-on .filament::after {
+            border-color: #ffeb3b;
+            box-shadow: 0 0 10px #ffeb3b, inset 0 0 5px #ffeb3b;
+        }
+
+        body.light-on .bulb {
+            background: var(--bulb-on);
+            box-shadow: 
+                0 0 60px 30px rgba(255, 220, 100, 0.6),
+                0 0 100px 60px rgba(255, 200, 80, 0.3),
+                0 0 150px 100px rgba(255, 180, 60, 0.1),
+                inset 0 -10px 20px rgba(255, 200, 100, 0.3),
+                inset 0 10px 30px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Light Cone Effect */
+        .light-cone {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 400px;
+            background: linear-gradient(to bottom, 
+                rgba(255, 220, 100, 0.3) 0%,
+                rgba(255, 200, 80, 0.1) 40%,
+                transparent 100%);
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
             opacity: 0;
+            transition: opacity 0.5s ease;
             pointer-events: none;
-            transition: opacity 0.5s;
+            filter: blur(20px);
             z-index: 0;
         }
 
-        .light-on .room-glow {
+        body.light-on .light-cone {
             opacity: 1;
         }
 
-        /* The Pull String */
-        .pull-string-container {
-            position: absolute;
-            top: 150px;
-            right: 80px;
-            width: 20px;
-            height: 150px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: transform 0.1s;
-            z-index: 3;
-            -webkit-tap-highlight-color: transparent;
+        /* Floor Glow */
+        .floor-glow {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 200px;
+            background: radial-gradient(ellipse, 
+                rgba(255, 220, 100, 0.2) 0%, 
+                rgba(255, 200, 80, 0.05) 40%,
+                transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(30px);
         }
 
-        .string-line {
-            width: 2px;
-            height: 120px;
-            background: #888;
-            transition: height 0.1s;
+        body.light-on .floor-glow {
+            opacity: 1;
+        }
+
+        /* Pull String Assembly */
+        .pull-switch {
+            position: absolute;
+            top: 80px;
+            right: 40px;
+            width: 30px;
+            height: 200px;
+            cursor: grab;
+            z-index: 10;
+            transform-origin: top center;
+        }
+
+        .pull-switch:active {
+            cursor: grabbing;
+        }
+
+        .string-chain {
+            width: 3px;
+            height: 100%;
+            margin: 0 auto;
+            position: relative;
+            transform-origin: top center;
+        }
+
+        .chain-link {
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to right, #1a1a1a, #333, #1a1a1a);
+            border-radius: 1px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
 
         .string-handle {
-            width: 12px;
-            height: 20px;
-            background: #555;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 24px;
+            background: linear-gradient(135deg, #444, #222);
+            border-radius: 8px;
+            box-shadow: 
+                0 3px 6px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: transform 0.1s;
         }
 
-        /* Pull Animation State */
-        .pull-string-container:active {
-            transform: translateY(15px);
+        .string-handle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: #111;
+            border-radius: 50%;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
         }
 
-        /* Instructional text */
+        /* Pull Animation States */
+        .pull-switch.pulling {
+            animation: pullDown 0.15s ease-out forwards;
+        }
+
+        .pull-switch.releasing {
+            animation: pullUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes pullDown {
+            to { transform: translateY(25px) rotateZ(2deg); }
+        }
+
+        @keyframes pullUp {
+            0% { transform: translateY(25px) rotateZ(2deg); }
+            60% { transform: translateY(-5px) rotateZ(-1deg); }
+            100% { transform: translateY(0) rotateZ(0deg); }
+        }
+
+        /* Swing Physics */
+        .swinging {
+            animation: pendulum 2s ease-out;
+        }
+
+        @keyframes pendulum {
+            0% { transform: rotateZ(0deg); }
+            20% { transform: rotateZ(8deg); }
+            40% { transform: rotateZ(-6deg); }
+            60% { transform: rotateZ(4deg); }
+            80% { transform: rotateZ(-2deg); }
+            100% { transform: rotateZ(0deg); }
+        }
+
+        /* Instructions */
         .hint {
             position: fixed;
             bottom: 40px;
-            color: #666;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #555;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 12px;
+            letter-spacing: 3px;
+            font-size: 11px;
+            font-weight: 500;
             pointer-events: none;
+            text-align: center;
+            z-index: 20;
+            transition: color 0.5s;
         }
 
-        /* Switch sound simulation indicator */
-        .click-feedback {
+        body.light-on .hint {
+            color: #777;
+        }
+
+        /* Ambient occlusion under shade */
+        .shade-shadow {
             position: absolute;
-            top: -20px;
-            font-weight: bold;
-            color: #ffeb3b;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        @keyframes clickPop {
-            0% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1.2); }
-            100% { opacity: 0; transform: scale(1); }
-        }
-
-        .animate-click {
-            animation: clickPop 0.3s ease-out;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 40px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.6) 0%, transparent 70%);
+            filter: blur(10px);
+            z-index: 0;
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 
-    <div class="room-glow"></div>
+    <div class="room"></div>
+    <div class="vignette"></div>
+    <div class="floor-glow"></div>
 
-    <div class="lamp-container" id="lampFrame">
+    <!-- Dust Particles -->
+    <div class="dust-container" id="dustContainer"></div>
+
+    <div class="lamp-assembly" id="lampAssembly">
         <div class="ceiling-mount"></div>
-        <div class="cord"></div>
-        <div class="lamp-shade"></div>
-        <div class="bulb"></div>
 
-        <!-- The Pull String Mechanism -->
-        <div class="pull-string-container" id="pullString">
-            <div class="click-feedback" id="feedback">CLICK</div>
-            <div class="string-line"></div>
-            <div class="string-handle"></div>
+        <div class="cord-physics" id="cordPhysics">
+            <div class="cord-segment" style="height: 100%; top: 0;"></div>
+        </div>
+
+        <div class="lamp-head" id="lampHead">
+            <div class="lamp-shade">
+                <div class="shade-interior"></div>
+            </div>
+            <div class="shade-shadow"></div>
+
+            <div class="bulb-container">
+                <div class="bulb">
+                    <div class="filament"></div>
+                </div>
+                <div class="light-cone"></div>
+            </div>
+
+            <!-- Pull Switch attached to shade -->
+            <div class="pull-switch" id="pullSwitch">
+                <div class="string-chain" id="stringChain"></div>
+                <div class="string-handle"></div>
+            </div>
         </div>
     </div>
 
-    <div class="hint">Pull the string to toggle</div>
+    <div class="hint">Pull the chain to toggle light<br><span style="font-size: 9px; opacity: 0.7;">Space or Enter also works</span></div>
 
     <script>
+        // Initialize elements
         const body = document.body;
-        const pullString = document.getElementById('pullString');
-        const feedback = document.getElementById('feedback');
+        const pullSwitch = document.getElementById('pullSwitch');
+        const lampHead = document.getElementById('lampHead');
+        const stringChain = document.getElementById('stringChain');
+        const dustContainer = document.getElementById('dustContainer');
         let isOn = false;
+        let isPulling = false;
+
+        // Create chain links
+        function createChain() {
+            const linkCount = 15;
+            const linkHeight = 100 / linkCount;
+            for (let i = 0; i < linkCount; i++) {
+                const link = document.createElement('div');
+                link.className = 'chain-link';
+                link.style.top = `${i * linkHeight}%`;
+                link.style.height = `${linkHeight - 1}%`;
+                stringChain.appendChild(link);
+            }
+        }
+        createChain();
+
+        // Create dust particles
+        function createDust() {
+            for (let i = 0; i < 30; i++) {
+                const dust = document.createElement('div');
+                dust.className = 'dust';
+                dust.style.left = `${30 + Math.random() * 40}%`;
+                dust.style.top = `${40 + Math.random() * 50}%`;
+                dust.style.animationDelay = `${Math.random() * 10}s`;
+                dust.style.animationDuration = `${8 + Math.random() * 6}s`;
+                dustContainer.appendChild(dust);
+            }
+        }
+        createDust();
+
+        // Audio Context for click sound
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+
+        function playClickSound() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            // Create a mechanical "click" sound
+            oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.1);
+
+            // Add a second tone for depth
+            const osc2 = audioCtx.createOscillator();
+            const gain2 = audioCtx.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioCtx.destination);
+
+            osc2.frequency.setValueAtTime(400, audioCtx.currentTime);
+            osc2.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.08);
+
+            gain2.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+
+            osc2.start(audioCtx.currentTime);
+            osc2.stop(audioCtx.currentTime + 0.08);
+        }
 
         function toggleLamp() {
             isOn = !isOn;
-            
+
             if (isOn) {
                 body.classList.add('light-on');
             } else {
                 body.classList.remove('light-on');
             }
 
-            // Visual feedback for the 'click'
-            feedback.classList.remove('animate-click');
-            void feedback.offsetWidth; // Trigger reflow
-            feedback.classList.add('animate-click');
+            playClickSound();
         }
 
-        // Event Listeners
-        pullString.addEventListener('mousedown', () => {
-            // Optional: add a slight stretch logic here if desired
-        });
+        // Pull interaction
+        function startPull(e) {
+            if (isPulling) return;
+            isPulling = true;
 
-        pullString.addEventListener('click', (e) => {
+            pullSwitch.classList.remove('releasing');
+            pullSwitch.classList.add('pulling');
+
+            // Stop the gentle sway while pulling
+            lampHead.style.animation = 'none';
+        }
+
+        function endPull(e) {
+            if (!isPulling) return;
+
+            pullSwitch.classList.remove('pulling');
+            pullSwitch.classList.add('releasing');
+
+            // Trigger the toggle
             toggleLamp();
-        });
 
-        // Touch support
-        pullString.addEventListener('touchstart', (e) => {
+            // Add swing physics to lamp
+            lampHead.classList.remove('swinging');
+            void lampHead.offsetWidth; // Trigger reflow
+            lampHead.classList.add('swinging');
+
+            // Resume gentle sway after swing settles
+            setTimeout(() => {
+                lampHead.style.animation = '';
+                lampHead.classList.remove('swinging');
+            }, 2000);
+
+            setTimeout(() => {
+                isPulling = false;
+                pullSwitch.classList.remove('releasing');
+            }, 400);
+        }
+
+        // Mouse events
+        pullSwitch.addEventListener('mousedown', startPull);
+        window.addEventListener('mouseup', endPull);
+
+        // Touch events
+        pullSwitch.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            toggleLamp();
+            startPull(e);
         });
+        window.addEventListener('touchend', endPull);
 
-        // Accessibility: Keyboard support
+        // Keyboard accessibility
         window.addEventListener('keydown', (e) => {
             if (e.code === 'Space' || e.code === 'Enter') {
-                toggleLamp();
+                e.preventDefault();
+                startPull();
+                setTimeout(endPull, 150);
             }
         });
+
+        // Prevent context menu on right click
+        pullSwitch.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        // Random flicker effect when turning on (optional realism)
+        function flicker() {
+            if (!isOn) return;
+            const bulb = document.querySelector('.bulb');
+            bulb.style.opacity = '0.8';
+            setTimeout(() => {
+                bulb.style.opacity = '1';
+            }, 50);
+        }
+
+        // Add occasional micro-flicker when on
+        setInterval(() => {
+            if (isOn && Math.random() > 0.95) {
+                flicker();
+            }
+        }, 2000);
     </script>
 </body>
 </html>
