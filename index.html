@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,21 +44,25 @@
             background-color: #f0fdfa;
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill-opacity='0.05' fill='%230d9488' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
+
         .dark .hex-bg {
             background-color: #0f172a;
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill-opacity='0.05' fill='%2314b8a6' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
-        
+
         .microscope-overlay {
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             pointer-events: none;
             background: radial-gradient(circle, transparent 20%, rgba(13, 148, 136, 0.05) 21%, transparent 22%);
             background-size: 100% 100%;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        
+
         .card-hover:hover .microscope-overlay {
             opacity: 1;
         }
@@ -72,6 +77,7 @@
             height: 350px;
             max-height: 400px;
         }
+
         @media (max-width: 768px) {
             .chart-container {
                 height: 300px;
@@ -88,6 +94,7 @@
             width: 2px;
             background: #cbd5e1;
         }
+
         .dark .timeline-line::before {
             background: #334155;
         }
@@ -108,10 +115,12 @@
     -->
     <!-- CONFIRMATION: NO SVG graphics used (CSS patterns only). NO Mermaid JS used. -->
 </head>
+
 <body class="bg-slate-50 text-slate-800 transition-colors duration-300 dark:bg-slate-900 dark:text-slate-100 font-sans">
 
     <!-- Navigation -->
-    <nav class="fixed w-full z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 shadow-sm transition-colors duration-300">
+    <nav
+        class="fixed w-full z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 shadow-sm transition-colors duration-300">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
@@ -119,16 +128,21 @@
                     <span class="font-bold text-xl tracking-tight text-teal-700 dark:text-teal-400">DevScientist</span>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#about" class="text-slate-600 hover:text-teal-600 dark:text-slate-300 dark:hover:text-teal-400 transition-colors font-medium">About</a>
-                    <a href="#skills" class="text-slate-600 hover:text-teal-600 dark:text-slate-300 dark:hover:text-teal-400 transition-colors font-medium">Skills</a>
-                    <a href="#projects" class="text-slate-600 hover:text-teal-600 dark:text-slate-300 dark:hover:text-teal-400 transition-colors font-medium">Projects</a>
-                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-xl">
+                    <a href="#about"
+                        class="text-slate-600 hover:text-teal-600 dark:text-slate-300 dark:hover:text-teal-400 transition-colors font-medium">About</a>
+                    <a href="#skills"
+                        class="text-slate-600 hover:text-teal-600 dark:text-slate-300 dark:hover:text-teal-400 transition-colors font-medium">Skills</a>
+                    <a href="#projects"
+                        class="text-slate-600 hover:text-teal-600 dark:text-slate-300 dark:hover:text-teal-400 transition-colors font-medium">Projects</a>
+                    <button id="theme-toggle"
+                        class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-xl">
                         🌙
                     </button>
                 </div>
                 <!-- Mobile menu button -->
                 <div class="md:hidden flex items-center gap-4">
-                     <button id="theme-toggle-mobile" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-xl">
+                    <button id="theme-toggle-mobile"
+                        class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-xl">
                         🌙
                     </button>
                     <button id="mobile-menu-btn" class="text-slate-600 dark:text-slate-300 hover:text-teal-600">
@@ -138,11 +152,15 @@
             </div>
         </div>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700">
+        <div id="mobile-menu"
+            class="hidden md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200 hover:text-teal-600 hover:bg-slate-50 dark:hover:bg-slate-800">About</a>
-                <a href="#skills" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200 hover:text-teal-600 hover:bg-slate-50 dark:hover:bg-slate-800">Skills</a>
-                <a href="#projects" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200 hover:text-teal-600 hover:bg-slate-50 dark:hover:bg-slate-800">Projects</a>
+                <a href="#about"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200 hover:text-teal-600 hover:bg-slate-50 dark:hover:bg-slate-800">About</a>
+                <a href="#skills"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200 hover:text-teal-600 hover:bg-slate-50 dark:hover:bg-slate-800">Skills</a>
+                <a href="#projects"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200 hover:text-teal-600 hover:bg-slate-50 dark:hover:bg-slate-800">Projects</a>
             </div>
         </div>
     </nav>
@@ -150,7 +168,8 @@
     <!-- Hero Section -->
     <section class="hex-bg relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-            <div class="inline-block p-2 px-4 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-300 font-semibold text-sm mb-6 animate-pulse-slow border border-teal-200 dark:border-teal-800">
+            <div
+                class="inline-block p-2 px-4 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-300 font-semibold text-sm mb-6 animate-pulse-slow border border-teal-200 dark:border-teal-800">
                 🚀 LabVerse Launching 2027
             </div>
             <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
@@ -161,10 +180,12 @@
                 Medical Laboratory Scientist | Full-Stack Developer | Creator of LabVerse
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#projects" class="px-8 py-4 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                <a href="#projects"
+                    class="px-8 py-4 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
                     View Projects
                 </a>
-                <a href="#contact" class="px-8 py-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-teal-600 dark:hover:border-teal-400 text-slate-700 dark:text-slate-200 font-bold rounded-lg transition-all">
+                <a href="#contact"
+                    class="px-8 py-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-teal-600 dark:hover:border-teal-400 text-slate-700 dark:text-slate-200 font-bold rounded-lg transition-all">
                     Contact Me
                 </a>
             </div>
@@ -175,12 +196,16 @@
     </section>
 
     <!-- About Me Section -->
-    <section id="about" class="py-20 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 transition-colors duration-300">
+    <section id="about"
+        class="py-20 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 transition-colors duration-300">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="relative group">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-teal-600 to-slate-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                    <div class="relative w-full aspect-[4/5] bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden flex items-center justify-center border-2 border-slate-100 dark:border-slate-700">
+                    <div
+                        class="absolute -inset-1 bg-gradient-to-r from-teal-600 to-slate-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200">
+                    </div>
+                    <div
+                        class="relative w-full aspect-[4/5] bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden flex items-center justify-center border-2 border-slate-100 dark:border-slate-700">
                         <!-- Placeholder for User Photo -->
                         <div class="text-center p-8">
                             <img src="profile-img.png" alt="Profile Photo" style="border-radius: 10rem;">
@@ -192,15 +217,21 @@
                         <span class="w-10 h-1 bg-teal-600 rounded-full"></span>
                         The Hybrid Narrative
                     </h2>
-                    <div class="prose dark:prose-invert text-lg text-slate-600 dark:text-slate-300 leading-relaxed space-y-4">
+                    <div
+                        class="prose dark:prose-invert text-lg text-slate-600 dark:text-slate-300 leading-relaxed space-y-4">
                         <p>
-                            I don't just write code; I understand the biological data flowing through it. As a <strong>Medical Laboratory Scientist</strong>, I have been trained in precision, quality control, and understand the critical importance of accurate diagnostics.
+                            I don't just write code; I understand the biological data flowing through it. As a
+                            <strong>Medical Laboratory Scientist</strong>, I have been trained in precision, quality
+                            control, and understand the critical importance of accurate diagnostics.
                         </p>
                         <p>
-                            As a <strong>Developer</strong>, I translate that rigorous discipline into structured, bug-free applications. I noticed a gap in the availability of digital resources for lab students and professionals, which led me to build <strong>LabVerse</strong>.
+                            As a <strong>Developer</strong>, I translate that rigorous discipline into structured,
+                            bug-free applications. I noticed a gap in the availability of digital resources for lab
+                            students and professionals, which led me to build <strong>LabVerse</strong>.
                         </p>
                         <p>
-                            My goal is to digitize the laboratory experience, making medical education accessible, interactive, and efficient through modern web technologies.
+                            My goal is to digitize the laboratory experience, making medical education accessible,
+                            interactive, and efficient through modern web technologies.
                         </p>
                     </div>
                     <!--<div class="mt-8 flex gap-4">
@@ -219,14 +250,17 @@
             <div class="text-center mb-16">
                 <h2 class="text-3xl font-bold mb-4">Skills Matrix</h2>
                 <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                    A visual representation of my dual expertise. I speak both the language of cells and the language of syntax.
+                    A visual representation of my dual expertise. I speak both the language of cells and the language of
+                    syntax.
                 </p>
             </div>
 
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <!-- Data Viz -->
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 border border-slate-100 dark:border-slate-700">
-                    <h3 class="text-center text-lg font-semibold mb-4 text-slate-700 dark:text-slate-200">Competency Radar</h3>
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 border border-slate-100 dark:border-slate-700">
+                    <h3 class="text-center text-lg font-semibold mb-4 text-slate-700 dark:text-slate-200">Competency
+                        Radar</h3>
                     <div class="chart-container">
                         <canvas id="skillsChart"></canvas>
                     </div>
@@ -239,13 +273,25 @@
                             <span>💻</span> Technical Stack
                         </h3>
                         <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">HTML5 & CSS3</span>
-                            <span class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">JavaScript (ES6+)</span>
-                            <span class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">Tailwind CSS</span>
-                            <span class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">Firebase / Firestore</span>
-                            <span class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">Chart.js</span>
-                            <span class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">Git & GitHub</span>
-                            <span class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">Responsive Design</span>
+                            <span
+                                class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">HTML5
+                                & CSS3</span>
+                            <span
+                                class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">JavaScript
+                                (ES6+)</span>
+                            <span
+                                class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">Tailwind
+                                CSS</span>
+                            <span
+                                class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">Firebase
+                                / Firestore</span>
+                            <span
+                                class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">Chart.js</span>
+                            <span class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">Git
+                                & GitHub</span>
+                            <span
+                                class="px-3 py-1 bg-slate-200 dark:bg-slate-700 rounded-full text-sm font-medium">Responsive
+                                Design</span>
                         </div>
                     </div>
 
@@ -254,12 +300,22 @@
                             <span>🔬</span> Clinical Expertise
                         </h3>
                         <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-800">Hematology</span>
-                            <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-800">Clinical Chemistry</span>
-                            <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-800">Microbiology & Virology</span>
-                            <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-800">Histopathology</span>
-                            <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-800">Quality Control (QA/QC)</span>
-                            <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-800">Research Methodology</span>
+                            <span
+                                class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-800">Hematology</span>
+                            <span
+                                class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-800">Clinical
+                                Chemistry</span>
+                            <span
+                                class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-800">Microbiology
+                                & Virology</span>
+                            <span
+                                class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-800">Histopathology</span>
+                            <span
+                                class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-800">Quality
+                                Control (QA/QC)</span>
+                            <span
+                                class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-800">Research
+                                Methodology</span>
                         </div>
                     </div>
                 </div>
@@ -271,31 +327,43 @@
     <section class="py-20 bg-white dark:bg-slate-900 transition-colors duration-300">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold mb-12 text-center">Experience Timeline</h2>
-            
+
             <div class="relative timeline-line space-y-12 pl-10">
                 <!-- Item 1 -->
                 <div class="relative">
-                    <div class="absolute -left-10 top-1 w-5 h-5 bg-teal-500 rounded-full border-4 border-white dark:border-slate-900"></div>
-                    <div class="bg-slate-50 dark:bg-slate-800 p-6 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm card-hover hover:shadow-md transition-shadow">
+                    <div
+                        class="absolute -left-10 top-1 w-5 h-5 bg-teal-500 rounded-full border-4 border-white dark:border-slate-900">
+                    </div>
+                    <div
+                        class="bg-slate-50 dark:bg-slate-800 p-6 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm card-hover hover:shadow-md transition-shadow">
                         <div class="microscope-overlay rounded-xl"></div>
-                        <span class="text-sm font-bold text-teal-600 dark:text-teal-400 mb-2 block">2025 - Present</span>
+                        <span class="text-sm font-bold text-teal-600 dark:text-teal-400 mb-2 block">2025 -
+                            Present</span>
                         <h3 class="text-xl font-bold text-slate-800 dark:text-white">Founder & Lead Developer</h3>
                         <p class="text-md text-slate-600 dark:text-slate-300 font-medium">LabVerse</p>
                         <p class="mt-2 text-slate-500 dark:text-slate-400">
-                            Conceptualized and built a comprehensive educational platform for MLS students. Implemented virtual microscopy, course tracking, and dark mode features using HTML/JS/Tailwind.
+                            Conceptualized and built a comprehensive educational platform for MLS students. Implemented
+                            virtual microscopy, course tracking, and dark mode features using HTML/JS/Tailwind.
                         </p>
                     </div>
                 </div>
 
                 <!-- Item 2 -->
                 <div class="relative">
-                    <div class="absolute -left-10 top-1 w-5 h-5 bg-slate-400 rounded-full border-4 border-white dark:border-slate-900"></div>
-                    <div class="bg-slate-50 dark:bg-slate-800 p-6 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
-                        <span class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-2 block">2023 - Present</span>
-                        <h3 class="text-xl font-bold text-slate-800 dark:text-white">Medical Laboratory Science Student</h3>
-                        <p class="text-md text-slate-600 dark:text-slate-300 font-medium">University / Clinical Rotations</p>
+                    <div
+                        class="absolute -left-10 top-1 w-5 h-5 bg-slate-400 rounded-full border-4 border-white dark:border-slate-900">
+                    </div>
+                    <div
+                        class="bg-slate-50 dark:bg-slate-800 p-6 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                        <span class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-2 block">2023 -
+                            Present</span>
+                        <h3 class="text-xl font-bold text-slate-800 dark:text-white">Medical Laboratory Science Student
+                        </h3>
+                        <p class="text-md text-slate-600 dark:text-slate-300 font-medium">University / Clinical
+                            Rotations</p>
                         <p class="mt-2 text-slate-500 dark:text-slate-400">
-                            Well versed in Chemical Pathology, Hematology, and Histopathology with hands-on laboratory experience.
+                            Well versed in Chemical Pathology, Hematology, and Histopathology with hands-on laboratory
+                            experience.
                         </p>
                     </div>
                 </div>
@@ -307,58 +375,101 @@
     <section id="projects" class="py-20 bg-slate-50 dark:bg-slate-850 transition-colors duration-300">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold mb-12 text-center">Featured Projects</h2>
-            
+
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- LabVerse (Main Feature) -->
-                <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-md border border-slate-200 dark:border-slate-700 flex flex-col md:flex-row group cursor-pointer hover:border-teal-500 transition-all">
+                <div
+                    class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-md border border-slate-200 dark:border-slate-700 flex flex-col md:flex-row group cursor-pointer hover:border-teal-500 transition-all">
                     <div class="bg-teal-100 dark:bg-teal-900/50 md:w-2/5 p-8 flex items-center justify-center">
                         <span class="text-8xl">🔬</span>
                     </div>
                     <div class="p-8 md:w-3/5 flex flex-col justify-center">
-                        <div class="uppercase tracking-wide text-sm text-teal-600 dark:text-teal-400 font-bold mb-2">Flagship Project</div>
-                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-teal-600 transition-colors">LabVerse Ecosystem</h3>
+                        <div class="uppercase tracking-wide text-sm text-teal-600 dark:text-teal-400 font-bold mb-2">
+                            Flagship Project</div>
+                        <h3
+                            class="text-2xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-teal-600 transition-colors">
+                            LabVerse Ecosystem</h3>
                         <p class="text-slate-600 dark:text-slate-300 mb-4">
-                            A unified platform with virtual microscopy, curriculum tracking, and adaptive learning for Med Lab students. Replaces scattered textbooks with a responsive digital companion.
+                            A unified platform with virtual microscopy, curriculum tracking, and adaptive learning for
+                            Med Lab students. Replaces scattered textbooks with a responsive digital companion.
                         </p>
                         <div class="flex flex-wrap gap-2 mb-6">
                             <span class="text-xs bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">Vanilla JS</span>
                             <span class="text-xs bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">Tailwind</span>
                             <span class="text-xs bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">LocalStorage</span>
                         </div>
-                        <span class="inline-flex items-center text-teal-600 dark:text-teal-400 font-semibold">View Case Study →</span>
+                        <span class="inline-flex items-center text-teal-600 dark:text-teal-400 font-semibold">View Case
+                            Study →</span>
                     </div>
                 </div>
 
                 <!-- Launch Countdown -->
-                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 p-6 flex flex-col hover:-translate-y-1 transition-transform">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 p-6 flex flex-col hover:-translate-y-1 transition-transform">
                     <div class="mb-4 text-4xl">⏳</div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Launch Countdown</h3>
                     <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">
-                        A responsive landing page featuring a real-time JS countdown timer targeting the official release date.
+                        A responsive landing page featuring a real-time JS countdown timer targeting the official
+                        release date.
                     </p>
                     <div class="mt-auto">
-                        <a href="labverse-landing-page.html" class="text-sm font-semibold text-teal-600 hover:text-teal-700">View Deployment →</a>
+                        <a href="labverse-landing-page.html"
+                            class="text-sm font-semibold text-teal-600 hover:text-teal-700">View Deployment →</a>
                     </div>
                 </div>
 
                 <!-- Lamp Animation -->
-                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center hover:-translate-y-1 transition-transform">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center hover:-translate-y-1 transition-transform">
                     <div class="mb-4 text-4xl">💡</div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Interactive Lamp</h3>
                     <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 text-center flex-grow">
-                        A playful JS/CSS animation of a lamp that turns on/off with a click, demonstrating my front-end creativity and attention to detail.
+                        A playful JS/CSS animation of a lamp that turns on/off with a click, demonstrating my front-end
+                        creativity and attention to detail.
                     </p>
                     <div class="mt-auto">
-                        <a href="lamp-animation.html" class="text-sm font-semibold text-teal-600 hover:text-teal-700">View Animation →</a>
+                        <a href="lamp-animation.html"
+                            class="text-sm font-semibold text-teal-600 hover:text-teal-700">View Animation →</a>
+                    </div>
+                </div>
+
+                <!-- Calculator -->
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center hover:-translate-y-1 transition-transform">
+                    <div class="mb-4 text-4xl">🧮</div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Calculator</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 text-center flex-grow">
+                        A fully functional calculator with a clean, modern interface, demonstrating my front-end skills
+                        and attention to detail.
+                    </p>
+                    <div class="mt-auto">
+                        <a href="calculator.html" class="text-sm font-semibold text-teal-600 hover:text-teal-700">View
+                            Animation →</a>
+                    </div>
+                </div>
+
+                <!-- Three Body Problem -->
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center hover:-translate-y-1 transition-transform">
+                    <div class="mb-4 text-4xl">💫</div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Three Body Problem</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 text-center flex-grow">
+                        A physics simulation of the three-body problem, demonstrating chaotic gravitational dynamics.
+                    </p>
+                    <div class="mt-auto">
+                        <a href="Three-Body-Problem.html"
+                            class="text-sm font-semibold text-teal-600 hover:text-teal-700">View Animation →</a>
                     </div>
                 </div>
 
                 <!-- Portfolio Site -->
-                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 p-6 flex flex-col hover:-translate-y-1 transition-transform">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 p-6 flex flex-col hover:-translate-y-1 transition-transform">
                     <div class="mb-4 text-4xl">💼</div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">DevScientist Portfolio</h3>
                     <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow">
-                        You're looking at it! A fully responsive SPA built with Tailwind CSS, featuring dark mode and Chart.js integration.
+                        You're looking at it! A fully responsive SPA built with Tailwind CSS, featuring dark mode and
+                        Chart.js integration.
                     </p>
                     <div class="mt-auto">
                         <span class="text-sm font-semibold text-slate-400">Live Demo</span>
@@ -375,30 +486,39 @@
                 <div class="text-center md:text-left">
                     <h3 class="text-2xl font-bold text-white mb-2">Get in Touch</h3>
                     <p class="text-slate-400 max-w-md">
-                        Whether you need a full-stack web application or a consultation on laboratory informatics, I'm ready to collaborate.
+                        Whether you need a full-stack web application or a consultation on laboratory informatics, I'm
+                        ready to collaborate.
                     </p>
                 </div>
                 <div id="contact" class="flex flex-col items-center md:items-end gap-4">
-                    <form onsubmit="event.preventDefault(); alert('Thank you! This is a demo form.');" class="flex gap-2">
-                        <input type="email" placeholder="Enter your email" class="px-4 py-2 rounded bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-teal-500">
-                        <button type="submit" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded font-bold transition-colors">
+                    <form onsubmit="event.preventDefault(); alert('Thank you! This is a demo form.');"
+                        class="flex gap-2">
+                        <input type="email" placeholder="Enter your email"
+                            class="px-4 py-2 rounded bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-teal-500">
+                        <button type="submit"
+                            class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded font-bold transition-colors">
                             Say Hello
                         </button>
                     </form>
                     <div class="flex gap-6 text-2xl">
-                        <a href="https://github.com/valfest" class="hover:text-teal-400 transition-colors" aria-label="GitHub" title="GitHub" target="_blank" rel="noopener noreferrer">
+                        <a href="https://github.com/valfest" class="hover:text-teal-400 transition-colors"
+                            aria-label="GitHub" title="GitHub" target="_blank" rel="noopener noreferrer">
                             <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.016-2.04-3.338.724-4.042-1.612-4.042-1.612-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.085 1.84 1.238 1.84 1.238 1.07 1.834 2.809 1.304 3.495.997.108-.775.418-1.305.76-1.605-2.665-.303-5.467-1.333-5.467-5.931 0-1.31.47-2.381 1.235-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.5 11.5 0 0 1 3.003-.404c1.018.005 2.044.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.118 3.176.768.84 1.233 1.911 1.233 3.221 0 4.61-2.807 5.625-5.479 5.921.43.37.823 1.102.823 2.222 0 1.604-.014 2.896-.014 3.293 0 .321.217.694.825.576C20.565 22.092 24 17.592 24 12.297 24 5.67 18.627.297 12 .297z"/>
+                                <path
+                                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.016-2.04-3.338.724-4.042-1.612-4.042-1.612-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.085 1.84 1.238 1.84 1.238 1.07 1.834 2.809 1.304 3.495.997.108-.775.418-1.305.76-1.605-2.665-.303-5.467-1.333-5.467-5.931 0-1.31.47-2.381 1.235-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.5 11.5 0 0 1 3.003-.404c1.018.005 2.044.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.118 3.176.768.84 1.233 1.911 1.233 3.221 0 4.61-2.807 5.625-5.479 5.921.43.37.823 1.102.823 2.222 0 1.604-.014 2.896-.014 3.293 0 .321.217.694.825.576C20.565 22.092 24 17.592 24 12.297 24 5.67 18.627.297 12 .297z" />
                             </svg>
                         </a>
-                        <a href="#" class="hover:text-teal-400 transition-colors" aria-label="LinkedIn" title="LinkedIn" target="_blank" rel="noopener noreferrer">
+                        <a href="#" class="hover:text-teal-400 transition-colors" aria-label="LinkedIn" title="LinkedIn"
+                            target="_blank" rel="noopener noreferrer">
                             <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                <path d="M19 0H5C2.238 0 0 2.238 0 5v14c0 2.762 2.238 5 5 5h14c2.762 0 5-2.238 5-5V5c0-2.762-2.238-5-5-5zM7.5 20.5h-3V11h3v9.5zM6 9.7a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5zM21 20.5h-3v-4.7c0-1.13-.02-2.58-1.57-2.58-1.57 0-1.81 1.22-1.81 2.48v4.8h-3V11h2.88v1.3h.04c.4-.76 1.37-1.56 2.82-1.56 3.02 0 3.58 1.99 3.58 4.58v4.68z"/>
+                                <path
+                                    d="M19 0H5C2.238 0 0 2.238 0 5v14c0 2.762 2.238 5 5 5h14c2.762 0 5-2.238 5-5V5c0-2.762-2.238-5-5-5zM7.5 20.5h-3V11h3v9.5zM6 9.7a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5zM21 20.5h-3v-4.7c0-1.13-.02-2.58-1.57-2.58-1.57 0-1.81 1.22-1.81 2.48v4.8h-3V11h2.88v1.3h.04c.4-.76 1.37-1.56 2.82-1.56 3.02 0 3.58 1.99 3.58 4.58v4.68z" />
                             </svg>
                         </a>
                         <a href="#" class="hover:text-teal-400 transition-colors" aria-label="Email" title="Email">
                             <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                <path d="M2 6.5C2 5.672 2.672 5 3.5 5h17c.828 0 1.5.672 1.5 1.5v11c0 .828-.672 1.5-1.5 1.5h-17A1.5 1.5 0 0 1 2 17.5v-11zM3.75 7.75l8.25 5.25 8.25-5.25v-.25l-8.25 5.25L3.75 7.5v.25z"/>
+                                <path
+                                    d="M2 6.5C2 5.672 2.672 5 3.5 5h17c.828 0 1.5.672 1.5 1.5v11c0 .828-.672 1.5-1.5 1.5h-17A1.5 1.5 0 0 1 2 17.5v-11zM3.75 7.75l8.25 5.25 8.25-5.25v-.25l-8.25 5.25L3.75 7.5v.25z" />
                             </svg>
                         </a>
                     </div>
@@ -415,7 +535,7 @@
         const themeToggle = document.getElementById('theme-toggle');
         const themeToggleMobile = document.getElementById('theme-toggle-mobile');
         const html = document.documentElement;
-        
+
         // Check local storage or system preference
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             html.classList.add('dark');
@@ -450,7 +570,7 @@
         function initChart() {
             const ctx = document.getElementById('skillsChart').getContext('2d');
             const isDark = html.classList.contains('dark');
-            
+
             const textColor = isDark ? '#cbd5e1' : '#475569';
             const gridColor = isDark ? '#334155' : '#e2e8f0';
             const pointColor = isDark ? '#2dd4bf' : '#0d9488';
@@ -459,11 +579,11 @@
                 type: 'radar',
                 data: {
                     labels: [
-                        'Frontend (JS/CSS)', 
-                        'Backend/DB', 
-                        'Clinical Chemistry', 
-                        'Microbiology', 
-                        'Hematology', 
+                        'Frontend (JS/CSS)',
+                        'Backend/DB',
+                        'Clinical Chemistry',
+                        'Microbiology',
+                        'Hematology',
                         'UI/UX Design'
                     ],
                     datasets: [{
@@ -516,7 +636,7 @@
                             borderWidth: 1,
                             padding: 10,
                             callbacks: {
-                                label: function(context) {
+                                label: function (context) {
                                     return context.label + ': ' + context.raw + '%';
                                 }
                             }
@@ -538,4 +658,5 @@
 
     </script>
 </body>
+
 </html>

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="author" content="ValFest®">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LabVerse Calculator</title>
     <style>
@@ -215,12 +217,12 @@
             .container {
                 padding: 15px;
             }
-            
+
             button {
                 padding: 15px;
                 font-size: 1.1rem;
             }
-            
+
             #display {
                 font-size: 2rem;
             }
@@ -228,8 +230,15 @@
 
         /* Animations */
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
         }
 
         .calculating {
@@ -238,9 +247,19 @@
 
         /* Error shake */
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
         }
 
         .error {
@@ -249,6 +268,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="display-container">
@@ -258,7 +278,7 @@
         </div>
 
         <button class="toggle-sci" onclick="toggleScientific()">Scientific Mode ▼</button>
-        
+
         <div class="scientific" id="scientific-panel">
             <button class="sci-btn" onclick="insertFunction('sin(')">sin</button>
             <button class="sci-btn" onclick="insertFunction('cos(')">cos</button>
@@ -278,22 +298,22 @@
             <button id="clear" onclick="clearDisplay()">AC</button>
             <button class="function" onclick="undo()">⌫</button>
             <button class="operator" onclick="appendOperator('/')" data-op="/">÷</button>
-            
+
             <button class="number" onclick="appendNumber('7')">7</button>
             <button class="number" onclick="appendNumber('8')">8</button>
             <button class="number" onclick="appendNumber('9')">9</button>
             <button class="operator" onclick="appendOperator('*')" data-op="*">×</button>
-            
+
             <button class="number" onclick="appendNumber('4')">4</button>
             <button class="number" onclick="appendNumber('5')">5</button>
             <button class="number" onclick="appendNumber('6')">6</button>
             <button class="operator" onclick="appendOperator('-')" data-op="-">−</button>
-            
+
             <button class="number" onclick="appendNumber('1')">1</button>
             <button class="number" onclick="appendNumber('2')">2</button>
             <button class="number" onclick="appendNumber('3')">3</button>
             <button class="operator" onclick="appendOperator('+')" data-op="+">+</button>
-            
+
             <button class="number" id="zero" onclick="appendNumber('0')">0</button>
             <button class="number" onclick="appendNumber('.')">.</button>
             <button id="equals" onclick="calculate()">=</button>
@@ -306,7 +326,7 @@
         let lastWasOperator = false;
         let memory = 0;
         let scientificMode = false;
-        
+
         const display = document.getElementById("display");
         const history = document.getElementById("history");
 
@@ -327,17 +347,28 @@
         }
 
         function appendNumber(value) {
-            if (displayValue === "0" || displayValue === "Error" || lastWasOperator) {
-                if (value === '.' && displayValue === "0") {
-                    displayValue = "0.";
-                } else if (value === '.' && lastWasOperator) {
-                    displayValue = "0.";
+            if (displayValue === "Error") {
+                // After an error, start fresh
+                displayValue = value === '.' ? "0." : value;
+                lastWasOperator = false;
+            } else if (displayValue === "0" && !lastWasOperator) {
+                // Replace the leading zero (but keep "0." for decimals)
+                displayValue = value === '.' ? "0." : value;
+            } else if (lastWasOperator) {
+                // KEY FIX: append to the existing expression instead of overwriting it
+                if (value === '.') {
+                    displayValue += "0.";
                 } else {
-                    displayValue = value;
+                    displayValue += value;
                 }
                 lastWasOperator = false;
             } else {
-                if (value === '.' && displayValue.includes('.')) return;
+                // Guard decimal: only check the current number token, not the whole expression
+                if (value === '.') {
+                    const parts = displayValue.split(/[+\-*/]/);
+                    const lastPart = parts[parts.length - 1];
+                    if (lastPart.includes('.')) return;
+                }
                 if (displayValue.length >= 15) return;
                 displayValue += value;
             }
@@ -349,7 +380,7 @@
             if (displayValue === "Error") {
                 displayValue = "0";
             }
-            
+
             // Replace last operator if consecutive
             const lastChar = displayValue.slice(-1);
             if (['+', '-', '*', '/'].includes(lastChar)) {
@@ -357,7 +388,7 @@
             } else {
                 displayValue += op;
             }
-            
+
             lastWasOperator = true;
             updateDisplay();
             setActiveOperator(op);
@@ -451,7 +482,7 @@
             scientificMode = !scientificMode;
             const panel = document.getElementById("scientific-panel");
             const btn = document.querySelector(".toggle-sci");
-            
+
             if (scientificMode) {
                 panel.classList.add("show");
                 btn.innerText = "Scientific Mode ▲";
@@ -463,12 +494,12 @@
 
         function calculate() {
             if (displayValue === "Error") return;
-            
+
             display.classList.add("calculating");
             setTimeout(() => display.classList.remove("calculating"), 500);
-            
+
             historyValue = displayValue;
-            
+
             try {
                 // Replace display symbols with JS operators
                 let expression = displayValue
@@ -482,12 +513,12 @@
                     .replace(/ln\(/g, 'Math.log(')
                     .replace(/sqrt\(/g, 'Math.sqrt(')
                     .replace(/pow\(/g, 'Math.pow(');
-                
+
                 // Handle implicit multiplication
                 expression = expression.replace(/(\d)\(/g, '$1*(');
-                
+
                 const result = eval(expression);
-                
+
                 if (!isFinite(result) || isNaN(result)) {
                     displayValue = "Error";
                     display.classList.add("error");
@@ -499,7 +530,7 @@
                 displayValue = "Error";
                 display.classList.add("error");
             }
-            
+
             lastWasOperator = false;
             clearActiveOperator();
             updateDisplay();
@@ -521,11 +552,12 @@
         });
 
         // Prevent double-tap zoom on mobile
-        document.addEventListener('touchstart', function(e) {
+        document.addEventListener('touchstart', function (e) {
             if (e.touches.length > 1) {
                 e.preventDefault();
             }
         }, { passive: false });
     </script>
 </body>
+
 </html>

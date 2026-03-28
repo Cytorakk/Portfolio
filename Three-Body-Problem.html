@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="author" content="ValFest®">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Three Body Problem</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #050510;
+      font-family: 'Outfit', sans-serif;
+      color: #e0e0ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    /* ── Starfield ── */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Header ── */
+    header {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 28px 20px 12px;
+    }
+
+    header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 700;
+      background: linear-gradient(120deg, #ff6b6b, #ffd93d, #c77dff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.04em;
+    }
+
+    header p {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: #8888aa;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Canvas wrapper ── */
+    #canvas-wrap {
+      position: relative;
+      z-index: 1;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(120, 60, 200, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      margin: 0 auto;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    /* ── Controls ── */
+    #controls {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 18px 16px 10px;
+    }
+
+    .btn {
+      padding: 9px 22px;
+      border: none;
+      border-radius: 30px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    #btn-pause {
+      background: linear-gradient(135deg, #c77dff, #7b2ff7);
+      color: #fff;
+    }
+
+    #btn-reset {
+      background: linear-gradient(135deg, #ffd93d, #ff6b35);
+      color: #1a1a1a;
+    }
+
+    #btn-trail {
+      background: rgba(255, 255, 255, 0.07);
+      color: #bbbbd0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    #btn-trail.active {
+      background: rgba(100, 180, 255, 0.15);
+      color: #82cfff;
+      border-color: #82cfff55;
+    }
+
+    /* ── Info legend ── */
+    #legend {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 4px 16px 20px;
+    }
+
+    .leg-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.78rem;
+      color: #8888aa;
+    }
+
+    .leg-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── Stats ── */
+    #stats {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      z-index: 10;
+      font-size: 0.72rem;
+      color: rgba(200, 200, 230, 0.45);
+      line-height: 1.7;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="starfield"></canvas>
+
+  <header>
+    <h1>Three Body Problem</h1>
+    <p>Chaotic gravitational dynamics · N-body simulation</p>
+  </header>
+
+  <div id="canvas-wrap">
+    <canvas id="sim"></canvas>
+    <div id="stats"></div>
+  </div>
+
+  <div id="controls">
+    <button class="btn" id="btn-pause">⏸ Pause</button>
+    <button class="btn" id="btn-reset">↺ Reset</button>
+    <button class="btn" id="btn-trail">🌀 Trails ON</button>
+  </div>
+
+  <div id="legend">
+    <div class="leg-item">
+      <div class="leg-dot" style="background:#ff6b6b;box-shadow:0 0 6px #ff6b6b88"></div>Sol-α (Red Sun)
+    </div>
+    <div class="leg-item">
+      <div class="leg-dot" style="background:#ffd93d;box-shadow:0 0 6px #ffd93d88"></div>Sol-β (Yellow Sun)
+    </div>
+    <div class="leg-item">
+      <div class="leg-dot" style="background:#ffffff;box-shadow:0 0 6px #ffffff88"></div>Sol-γ (White Sun)
+    </div>
+    <div class="leg-item">
+      <div class="leg-dot" style="background:#7dd3fc;box-shadow:0 0 6px #7dd3fc88"></div>Planet Trisolaris
+    </div>
+  </div>
+
+  <script>
+    // ──────────────────────────────────────────────
+    //  Starfield background
+    // ──────────────────────────────────────────────
+    (function () {
+      const c = document.getElementById('starfield');
+      const ctx = c.getContext('2d');
+      let stars = [];
+
+      function resize() {
+        c.width = window.innerWidth;
+        c.height = window.innerHeight;
+        stars = Array.from({ length: 220 }, () => ({
+          x: Math.random() * c.width,
+          y: Math.random() * c.height,
+          r: Math.random() * 1.2 + 0.2,
+          a: Math.random() * 0.7 + 0.15,
+          speed: Math.random() * 0.35 + 0.05,
+          phase: Math.random() * Math.PI * 2
+        }));
+      }
+
+      let t = 0;
+      function draw() {
+        ctx.clearRect(0, 0, c.width, c.height);
+        t += 0.012;
+        for (const s of stars) {
+          const alpha = s.a * (0.6 + 0.4 * Math.sin(t * s.speed + s.phase));
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(220,220,255,${alpha})`;
+          ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+      draw();
+    })();
+
+    // ──────────────────────────────────────────────
+    //  Physics simulation
+    // ──────────────────────────────────────────────
+    (function () {
+      const canvas = document.getElementById('sim');
+      const ctx = canvas.getContext('2d');
+      const stats = document.getElementById('stats');
+
+      // Canvas sizing
+      const W = Math.min(window.innerWidth - 24, 820);
+      const H = Math.round(W * 0.6);
+      canvas.width = W;
+      canvas.height = H;
+
+      const cx = W / 2, cy = H / 2;
+
+      // ── Physical constants ──
+      const G = 1800;          // gravitational constant (scaled)
+      const DT = 0.0045;        // timestep (quarter original → slower motion)
+      const MAX_TRAIL = 500;    // planet trail length
+
+      // ── Canvas stars (generated once, drawn each frame) ──
+      const CANVAS_STARS = Array.from({ length: 160 }, () => ({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.1 + 0.15,
+        a: Math.random() * 0.55 + 0.15,
+        sp: Math.random() * 0.4 + 0.05,
+        ph: Math.random() * Math.PI * 2
+      }));
+      let starT = 0;
+
+      // ── Sun definitions (equilateral triangle, large masses) ──
+      const TRI_R = Math.min(W, H) * 0.30;  // circumradius of the triangle
+      const SUN_DATA = [
+        // top vertex
+        {
+          color: '#ff6b6b', glow: '#ff3333', r: 28, mass: 2200,
+          ax: cx + TRI_R * Math.cos(-Math.PI / 2),
+          ay: cy + TRI_R * Math.sin(-Math.PI / 2)
+        },
+        // bottom-right vertex
+        {
+          color: '#ffd93d', glow: '#ffaa00', r: 24, mass: 1800,
+          ax: cx + TRI_R * Math.cos(-Math.PI / 2 + 2 * Math.PI / 3),
+          ay: cy + TRI_R * Math.sin(-Math.PI / 2 + 2 * Math.PI / 3)
+        },
+        // bottom-left vertex — now white
+        {
+          color: '#ffffff', glow: '#ccccff', r: 20, mass: 1500,
+          ax: cx + TRI_R * Math.cos(-Math.PI / 2 + 4 * Math.PI / 3),
+          ay: cy + TRI_R * Math.sin(-Math.PI / 2 + 4 * Math.PI / 3)
+        },
+      ];
+
+      let suns, planet, trail, paused, showTrail, frame;
+
+      function initBodies() {
+        suns = SUN_DATA.map(s => ({
+          ...s,
+          x: s.ax,
+          y: s.ay,
+        }));
+
+        // Planet starts at the centroid of the triangle (equidistant from all suns)
+        // with a gentle tangential velocity — balanced so no single sun dominates
+        planet = {
+          x: cx,          // exact centroid
+          y: cy,
+          vx: 8,          // gentle rightward kick
+          vy: -5,          // slight upward component for chaos
+          r: 8,
+          color: '#7dd3fc',
+          glow: '#38bdf8',
+          mass: 1,
+        };
+
+        trail = [];
+        paused = false;
+        showTrail = true;
+        frame = 0;
+      }
+
+      // ── Gravity + Euler integration ──
+      function step() {
+        let ax = 0, ay = 0;
+
+        for (const sun of suns) {
+          const dx = sun.x - planet.x;
+          const dy = sun.y - planet.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const safe = Math.max(dist, sun.r + planet.r + 2);  // softening
+          const f = G * sun.mass / (safe * safe * safe);
+          ax += f * dx;
+          ay += f * dy;
+        }
+
+        planet.vx += ax * DT;
+        planet.vy += ay * DT;
+        planet.x += planet.vx * DT;
+        planet.y += planet.vy * DT;
+
+        // Keep trail
+        trail.push({ x: planet.x, y: planet.y });
+        if (trail.length > MAX_TRAIL) trail.shift();
+
+        // Wrap if too far off screen (chaos containment)
+        const margin = 80;
+        if (planet.x < -margin) { planet.x = W + margin; trail = []; }
+        if (planet.x > W + margin) { planet.x = -margin; trail = []; }
+        if (planet.y < -margin) { planet.y = H + margin; trail = []; }
+        if (planet.y > H + margin) { planet.y = -margin; trail = []; }
+      }
+
+      // ── Glow helper ──
+      function drawGlow(x, y, r, color, spread) {
+        const g = ctx.createRadialGradient(x, y, r * 0.3, x, y, r + spread);
+        g.addColorStop(0, color + 'cc');
+        g.addColorStop(0.4, color + '55');
+        g.addColorStop(1, color + '00');
+        ctx.beginPath();
+        ctx.arc(x, y, r + spread, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+      }
+
+      // ── Draw one body ──
+      function drawBody(b, glowSpread) {
+        drawGlow(b.x, b.y, b.r, b.glow, glowSpread);
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+        // bright core
+        const core = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+        core.addColorStop(0, 'rgba(255,255,255,0.85)');
+        core.addColorStop(0.35, 'rgba(255,255,255,0.10)');
+        core.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fillStyle = core;
+        ctx.fill();
+      }
+
+      // ── Draw trail ──
+      function drawTrail() {
+        if (trail.length < 2) return;
+        for (let i = 1; i < trail.length; i++) {
+          const t0 = trail[i - 1], t1 = trail[i];
+          const alpha = (i / trail.length) * 0.65;
+          ctx.beginPath();
+          ctx.moveTo(t0.x, t0.y);
+          ctx.lineTo(t1.x, t1.y);
+          ctx.strokeStyle = `rgba(125, 211, 252, ${alpha})`;
+          ctx.lineWidth = 1.5 * (i / trail.length);
+          ctx.stroke();
+        }
+      }
+
+      // ── Gravitational field lines (subtle) ──
+      function drawFieldDots() {
+        const step = 40;
+        for (let x = step / 2; x < W; x += step) {
+          for (let y = step / 2; y < H; y += step) {
+            let fx = 0, fy = 0;
+            for (const sun of suns) {
+              const dx = sun.x - x;
+              const dy = sun.y - y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 50) continue;
+              const f = sun.mass / (dist * dist * dist);
+              fx += f * dx; fy += f * dy;
+            }
+            const mag = Math.sqrt(fx * fx + fy * fy);
+            const len = Math.min(mag * 2000, 10);
+            const nx = fx / mag, ny = fy / mag;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + nx * len, y + ny * len);
+            ctx.strokeStyle = `rgba(150,100,255,0.07)`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // ── Main render ──
+      function render() {
+        // ── Deep-space background with canvas stars ──
+        ctx.fillStyle = 'rgba(5, 5, 16, 0.94)';
+        ctx.fillRect(0, 0, W, H);
+        starT += 0.014;
+        for (const s of CANVAS_STARS) {
+          const alpha = s.a * (0.55 + 0.45 * Math.sin(starT * s.sp + s.ph));
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(210,215,255,${alpha})`;
+          ctx.fill();
+        }
+
+        drawFieldDots();
+
+        if (showTrail) drawTrail();
+
+        for (const sun of suns) drawBody(sun, sun.r * 1.2);
+        drawBody(planet, planet.r * 2);
+
+        // Labels
+        ctx.font = '600 11px Outfit, sans-serif';
+        ctx.textAlign = 'center';
+        for (let i = 0; i < suns.length; i++) {
+          const s = suns[i];
+          const labels = ['Sol-α', 'Sol-β', 'Sol-γ'];
+          ctx.fillStyle = s.color + 'cc';
+          ctx.fillText(labels[i], s.x, s.y + s.r + 16);
+        }
+
+        frame++;
+      }
+
+      // ── Loop ──
+      let lastTime = 0;
+      function loop(ts) {
+        const dt = ts - lastTime;
+        lastTime = ts;
+        if (!paused) {
+          const steps = 3;          // sub-stepping for accuracy
+          for (let i = 0; i < steps; i++) step();
+          render();
+
+          stats.innerHTML =
+            `Frame: ${frame}<br>` +
+            `Planet: (${planet.x.toFixed(0)}, ${planet.y.toFixed(0)})<br>` +
+            `Velocity: ${Math.sqrt(planet.vx ** 2 + planet.vy ** 2).toFixed(1)} u/s`;
+        }
+        requestAnimationFrame(loop);
+      }
+
+      // ── Controls ──
+      document.getElementById('btn-pause').addEventListener('click', function () {
+        paused = !paused;
+        this.textContent = paused ? '▶ Resume' : '⏸ Pause';
+      });
+
+      document.getElementById('btn-reset').addEventListener('click', () => {
+        initBodies();
+      });
+
+      document.getElementById('btn-trail').addEventListener('click', function () {
+        showTrail = !showTrail;
+        this.textContent = showTrail ? '🌀 Trails ON' : '🌀 Trails OFF';
+        this.classList.toggle('active', showTrail);
+        if (!showTrail) trail = [];
+      });
+
+      // Boot
+      initBodies();
+      document.getElementById('btn-trail').classList.add('active');
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+
+</html>
